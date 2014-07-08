@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import random
 import re
 import sys
 
@@ -73,12 +74,17 @@ def _add_edge(s1, s2, method, status):
 
 
 def _write_edges():
+    def r():
+        # FF (255) is a little too light a colour so
+        # lets shorten the range a big.
+        return random.randint(0, 200)
     for edge in edge_tracker.values():
         (src, target, method), label, count = edge
         label = "%dx %s" % (count, label) if label else "%dx" % (count)
         edge_thickness = float(count) / max_found_edge_weight * max_edge_weight
+        color = "#%02X%02X%02X" % (r(), r(), r())
         g.add_edge(src, target, label=label, weight=count,
-                   penwidth=edge_thickness)
+                   penwidth=edge_thickness, color=color)
 
 with open(filename, 'rb') as f:
     for rawline in f:
